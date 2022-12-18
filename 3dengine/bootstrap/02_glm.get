@@ -1,0 +1,16 @@
+
+. ${BOOTSTRAP_DIR}/utils
+
+TEST_FILE=$LIB_DIR/include/glm/glm.hpp
+skip_if_installed $TEST_FILE
+
+cd $LIB_DIR
+
+git clone https://github.com/g-truc/glm.git
+if [ $? -ne 0 ]; then
+    echo "Can't get https://github.com/g-truc/glm.git repo"
+    error_exit
+fi
+
+# installing the lib
+cp -r ./glm/glm include

@@ -1,0 +1,22 @@
+. ${BOOTSTRAP_DIR}/utils
+
+SDL2_IMAGE_NAME=SDL2_image
+SDL2_IMAGE_VERSION=2.0.5
+SDL2_IMAGE_FILE=$SDL2_IMAGE_NAME-${SDL2_IMAGE_VERSION}.tar.gz
+SDL2_IMAGE_FILE_PATH=$LIB_DIR/$SDL2_IMAGE_FILE
+SDL2_IMAGE_URL=https://www.libsdl.org/projects/SDL_image/release/$SDL2_IMAGE_FILE
+# https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5.tar.gz
+
+TEST_FILE=$LIB_DIR/include/SDL2/SDL_image.h
+skip_if_installed $TEST_FILE
+
+get_file $SDL2_IMAGE_FILE_PATH $SDL2_IMAGE_URL
+
+extract_tar_gz_if_not_exists $SDL2_IMAGE_FILE_PATH $SDL2_IMAGE_NAME-$SDL2_IMAGE_VERSION
+cd $SDL2_IMAGE_NAME-$SDL2_IMAGE_VERSION
+
+configure_std
+
+make_std
+
+make_install_std

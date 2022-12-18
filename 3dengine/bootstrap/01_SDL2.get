@@ -1,0 +1,23 @@
+. ${BOOTSTRAP_DIR}/utils
+
+# download (if not exists) and install SDL2
+SDL2_NAME=SDL2
+SDL2_VERSION=2.0.12
+SDL2_FILE=$SDL2_NAME-$SDL2_VERSION.tar.gz
+SDL2_FILE_PATH=$LIB_DIR/$SDL2_FILE
+SDL_URL=https://www.libsdl.org/release/$SDL2_FILE
+#https://www.libsdl.org/release/SDL2-2.0.12.tar.gz
+
+TEST_FILE=$LIB_DIR/include/SDL2/SDL.h
+skip_if_installed $TEST_FILE
+
+get_file $SDL2_FILE_PATH $SDL_URL
+
+extract_tar_gz_if_not_exists $SDL2_FILE_PATH $SDL2_NAME-$SDL2_VERSION
+cd $SDL2_NAME-$SDL2_VERSION
+
+configure_std
+
+make_std
+
+make_install_std

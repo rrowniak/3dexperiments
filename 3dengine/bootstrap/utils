@@ -1,0 +1,112 @@
+function error_exit ()
+{
+    echo "Aborting" 1>&2
+    exit 1
+}
+
+function skip_if_installed ()
+{
+    FILE_TO_CHECK=$1
+    if [ -f $FILE_TO_CHECK ]; then
+        echo "Library seems to be installed. Skipping"
+        exit 0;
+    fi
+}
+
+function get_file ()
+{
+    FILE_PATH=$1
+    URL=$2
+
+    cd $LIB_DIR
+
+    if [ ! -f $FILE_PATH ]; then
+        echo "File not found. Downloading..."
+        wget $URL
+        if [ $? -ne 0 ]; then
+            echo "Unable to download file from $URL."
+            rm $FILE_PATH
+            error_exit
+        fi
+    fi
+}
+
+function extract_tar_gz_if_not_exists ()
+{
+    TAR_FILE=$1
+    DEST_DIR=$2
+
+    cd $LIB_DIR
+
+    if [ ! -d "$DEST_DIR" ]; then
+        mkdir -p $DEST_DIR
+        tar xf "$TAR_FILE"
+        if [ $? -ne 0 ]; then
+            echo "Unable to extract file $TAR_FILE."
+            echo Command: tar xfz "$TAR_FILE" -C "$DEST_DIR"
+            error_exit
+        fi
+    fi
+}
+
+function configure_std()
+{
+    echo "Configuring project..."
+    cmdout=$(./configure --prefix $LIB_DIR 2>&1) 
+    if [ $? -ne 0 ]; then
+        echo $cmdout
+        error_exit
+    fi
+    echo "Done."
+}
+
+function make_std()
+{
+    echo "Building project..."
+    cmdout=$(make -j4 2>&1)
+    if [ $? -ne 0 ]; then
+        echo $cmdout
+        error_exit
+    fi
+    echo "Done."
+}
+
+function make_install_std()
+{
+    echo "Installing project..."
+    cmdout=$(make install 2>&1)
+    if [ $? -ne 0 ]; then
+        echo $cmdout
+        error_exit
+    fi
+    echo "Done."
+}
+
+function git_clone()
+{
+    echo "git-cloning project..."
+    GIT_REPO=$1
+
+    cd $LIB_DIR
+
+    git clone --depth 1 -b master $GIT_REPO
+    if [ $? -ne 0 ]; then
+        echo "Can't get $GIT_REPO repo"
+        error_exit
+    fi
+    echo "Done."
+}
+
+function cmake_gen()
+{
+    echo "CMake generating..."
+    OPTIONS="$@"
+    mkdir build
+    cd build
+    cmdout=$(cmake .. -DCMAKE_INSTALL_PREFIX=$LIB_DIR $OPTIONS 2>&1)
+    if [ $? -ne 0 ]; then
+        echo $cmdout
+        error_exit
+    fi
+    echo "Done."
+}

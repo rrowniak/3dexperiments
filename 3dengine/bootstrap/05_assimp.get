@@ -1,0 +1,17 @@
+. ${BOOTSTRAP_DIR}/utils
+
+TEST_FILE=$LIB_DIR/include/assimp/Importer.hpp
+skip_if_installed $TEST_FILE
+
+if [ ! -d $LIB_DIR/assimp ]; then
+    GIT_REPO=https://github.com/assimp/assimp.git
+    git_clone $GIT_REPO
+fi
+
+cd assimp
+
+cmake_gen -DBUILD_SHARED_LIBS=OFF -DASSIMP_BUILD_ZLIB=ON
+
+make_std
+
+make_install_std
