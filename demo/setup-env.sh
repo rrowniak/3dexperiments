@@ -3,7 +3,7 @@
 # do some tests, download & build all necessary stuff
 
 CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-LIB_DIR=$CWD/lib
+LIB_DIR=$CWD/build/lib
 
 # ubuntu specific
 #sudo apt install libncurses-dev
@@ -206,6 +206,9 @@ fi
 
 cp libFontCache.a $LIB_DIR/lib
 cp ../SDL_FontCache.h $LIB_DIR/include
+
+# get fakeit mocking framework 
+wget https://github.com/eranpeer/FakeIt/blob/master/single_header/boost/fakeit.hpp -O ${LIB_DIR}/include/fakeit.hpp
 
 echo "-------------------------------------------------------"
 echo "              DONE - SUCCESS"
